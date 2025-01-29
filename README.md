@@ -9,7 +9,7 @@ To create a new LXC container on Proxmox and setup a app to run inside of it, ru
 ***Tested with:*** _proxmox 7.1+, alpine 3.12+, debian 11+, Ubuntu 18+_
 
 ```bash
-bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/ej52/proxmox/main/create.sh)"
+bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/create.sh)"
 ```
 
 ### Command line arguments
@@ -46,7 +46,7 @@ If you are not using proxmox or want to install a app on a existing install, you
 ***Note:*** _Only Alpine, Debian and Ubuntu are currently supported_
 
 ```sh
-sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/ej52/proxmox/main/install.sh)" -s --app nginx-proxy-manager
+sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --app nginx-proxy-manager
 ```
 
 ### Command line arguments

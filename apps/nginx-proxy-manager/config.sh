@@ -20,9 +20,9 @@ EPS_CT_DISK_SIZE=${EPS_CT_DISK_SIZE:-4}
 EPS_CT_MEMORY=${EPS_CT_MEMORY:-512}
 EPS_CT_SWAP=${EPS_CT_SWAP:-0}
 # NPM package versions
-NODE_VERSION="v16.20.2"
-YARN_VERSION="1.22.19"
-RUST_VERSION="1.74.0"
+NODE_VERSION="v18.16.0"
+YARN_VERSION="1.22.22-r1"
+RUST_VERSION="1.76"
 
 EPS_SERVICE_FILE=/etc/init.d/npm
 EPS_SERVICE_DATA="#!/sbin/openrc-run\ndescription=\"Nginx Proxy Manager\"\n\ncommand=\"/usr/local/bin/node\"\ncommand_args=\"index.js --abort_on_uncaught_exception --max_old_space_size=250\"\ncommand_background=\"yes\"\ndirectory=\"/app\"\n\npidfile=\"/var/run/npm.pid\"\noutput_log=\"/var/log/npm.log\"\nerror_log=\"/var/log/npm.err\"\n\ndepends () {\n  before openresty\n}\n\nstart_pre() {\n  mkdir -p /tmp/nginx/body /data/letsencrypt-acme-challenge\n  export NODE_ENV=production\n}\n\nstop() {\n  pkill -9 -f node\n  return 0\n}\n\nrestart() {\n  \$0 stop\n  \$0 start\n}"
@@ -39,3 +39,8 @@ lxc_checks() {
     log "warn" "This LXC container requires at least 4GB of disk space" 1
   fi
 }
+
+
+apk update
+apk upgrade --available && sync
+reboot

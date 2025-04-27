@@ -210,7 +210,7 @@ step_start "Yarn"
   step_end "Yarn ${CLR_CYB}v$YARN_VERSION${CLR} ${CLR_GN}Installed"
 
 step_start "Nginx Proxy Manager" "Downloading" "Downloaded"
-  NPM_VERSION=$(os_fetch -O- https://api.github.com/repos/NginxProxyManager/nginx-proxy-manager/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+  NPM_VERSION=2.10.4
   os_fetch -O- https://codeload.github.com/NginxProxyManager/nginx-proxy-manager/tar.gz/v$NPM_VERSION | tar -xz
   cd ./nginx-proxy-manager-$NPM_VERSION
   step_end "Nginx Proxy Manager ${CLR_CYB}v$NPM_VERSION${CLR} ${CLR_GN}Downloaded"

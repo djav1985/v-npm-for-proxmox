@@ -21,7 +21,7 @@ EPS_CT_MEMORY=${EPS_CT_MEMORY:-512}
 EPS_CT_SWAP=${EPS_CT_SWAP:-0}
 # NPM package versions
 export NODE_OPTIONS=--openssl-legacy-provider
-NODE_VERSION="v20.18.3"
+NODE_VERSION="v18.17.1"
 YARN_VERSION="1.22.22"
 RUST_VERSION="1.83.0"
  

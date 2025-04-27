@@ -132,13 +132,13 @@ step_start "Openresty"
   if [ "$EPS_OS_DISTRO" = "alpine" ]; then
     os_fetch -O /etc/apk/keys/admin@openresty.com-5ea678a6.rsa.pub 'http://openresty.org/package/admin@openresty.com-5ea678a6.rsa.pub'
     sed -i '/openresty.org/d' /etc/apk/repositories >$__OUTPUT
-    printf "http://openresty.org/package/alpine/v$EPS_OS_VERSION/main"| tee -a /etc/apk/repositories >$__OUTPUT
+    printf "http://openresty.org/package/alpine/v3.18/main"| tee -a /etc/apk/repositories >$__OUTPUT
   else
     os_fetch -O- https://openresty.org/package/pubkey.gpg | gpg --yes --dearmor -o /usr/share/keyrings/openresty.gpg &>$__OUTPUT
 
-    repository=http://openresty.org/package/$EPS_OS_DISTRO
+    repository=http://openresty.org/package/v3.18
     if [ "$EPS_OS_ARCH" != "amd64" ]; then
-      repository=http://openresty.org/package/$EPS_OS_ARCH/$EPS_OS_DISTRO
+      repository=http://openresty.org/package/v3.18/$EPS_OS_DISTRO
     fi
 
     source="deb [arch=$EPS_OS_ARCH signed-by=/usr/share/keyrings/openresty.gpg] $repository $EPS_OS_CODENAME "

@@ -7,7 +7,7 @@
 To create a Proxmox container please follow the main [README](https://github.com/djav1985/v-npm-for-proxmox)
 
 ```sh
-sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --app nginx-proxy-manager
+sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --app nginx-proxy-manager --cleanup
 ```
 
 Run the command above to install or update [Nginx Proxy Manager](https://nginxproxymanager.com/)

@@ -8,7 +8,7 @@ EPS_CLEANUP=${EPS_CLEANUP:-false}
 EPS_CT_INSTALL=${EPS_CT_INSTALL:-false}
 
 if [ -z "$EPS_BASE_URL" -o -z "$EPS_OS_DISTRO" -o -z "$EPS_UTILS_COMMON" -o -z "$EPS_UTILS_DISTRO" -o -z "$EPS_APP_CONFIG" ]; then
-  printf "Script looded incorrectly!\n\n";
+  printf "Script loaded incorrectly!\n\n";
   exit 1;
 fi
 
@@ -49,9 +49,9 @@ step_start "Operating System" "Updating" "Updated"
   pkg_upgrade
 
 step_start "Dependencies" "Installing" "Installed"
-  # Remove potential conflicting depenedencies
+  # Remove potential conflicting dependencies
   pkg_del nginx nodejs npm yarn *certbot rust* cargo*
-  # Install required depenedencies
+  # Install required dependencies
   pkg_add ca-certificates gnupg openssl apache2-utils logrotate $EPS_DEPENDENCIES
 
 step_start "Rust" "Installing" "Installed"
@@ -95,10 +95,10 @@ step_start "Python"
     pip uninstall -q -y cryptography cffi certbot tldextract --break-system-packages &>$__OUTPUT
   fi
 
-  # Remove potential conflicting depenedencies
+  # Remove potential conflicting dependencies
   pkg_del *3-pip *3-cffi *3-cryptography *3-tldextract *3-distutils *3-venv
 
-  # Install python depenedencies
+  # Install python dependencies
   pkg_add python3
   if [ "$EPS_OS_DISTRO" != "alpine" ]; then
     pkg_add python3-venv
@@ -215,7 +215,7 @@ step_start "Nginx Proxy Manager" "Downloading" "Downloaded"
   cd ./nginx-proxy-manager-$NPM_VERSION
   step_end "Nginx Proxy Manager ${CLR_CYB}v$NPM_VERSION${CLR} ${CLR_GN}Downloaded"
 
-step_start "Enviroment" "Setting up" "Setup"
+step_start "Environment" "Setting up" "Setup"
   # Update NPM version in package.json files
   sed -i "s/\"version\": \"0.0.0\"/\"version\": \"$NPM_VERSION\"/" backend/package.json
   sed -i "s/\"version\": \"0.0.0\"/\"version\": \"$NPM_VERSION\"/" frontend/package.json
@@ -300,7 +300,7 @@ step_start "Services" "Starting" "Started"
   svc_add openresty
   svc_add npm
 
-step_start "Enviroment" "Cleaning" "Cleaned"
+step_start "Environment" "Cleaning" "Cleaned"
   yarn cache clean --silent --force >$__OUTPUT
   # find /tmp -mindepth 1 -maxdepth 1 -not -name nginx -exec rm -rf '{}' \;
   if [ "$EPS_CLEANUP" = true ]; then

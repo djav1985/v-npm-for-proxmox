@@ -161,7 +161,7 @@ step_start "LXC templates" "Checking" "OK"
   step_end "Using LXC template: ${CLR_CYB}${_template}${CLR}"
 
 step_start "LXC container" "Creating" "Created"
-  _storage_type=$(pvesm status -storage $EPS_CT_STORAGE_CONTAINER >$__OUTPUT | awk 'NR>1 {print $2}')
+  _storage_type=$(pvesm status -storage $EPS_CT_STORAGE_CONTAINER | awk 'NR>1 {print $2}')
   if [ "$_storage_type" = "zfspool" ]; then
     log "warn" "Some containers may not work properly due to ZFS not supporting 'fallocate'."
     sleep 3
@@ -180,7 +180,7 @@ step_start "LXC container" "Creating" "Created"
     -swap $EPS_CT_SWAP
     -tags $EPS_APP_NAME
   )
-  pct create $EPS_CT_ID "$EPS_CT_STORAGE_TEMPLATES:vztmpl/$_template" ${_pct_options[@]} >$__OUTPUT
+  pct create $EPS_CT_ID "$EPS_CT_STORAGE_TEMPLATES:vztmpl/$_template" "${_pct_options[@]}" >$__OUTPUT
   pct start $EPS_CT_ID
   sleep 2
   if [ "$EPS_OS_DISTRO" = "alpine" ]; then
@@ -192,9 +192,6 @@ step_start "LXC container" "Creating" "Created"
 trap - ERR
 
 _utilDistro=$EPS_OS_DISTRO
-if [ "$EPS_OS_DISTRO" = "ubuntu" ]; then
-  _utilDistro="debian"
-fi
 
 export EPS_UTILS_DISTRO=$(wget --no-cache -qO- $EPS_BASE_URL/utils/${_utilDistro}.sh)
 lxc-attach -n $EPS_CT_ID -- bash -c "$EPS_APP_INSTALL"

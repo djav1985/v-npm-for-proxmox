@@ -50,10 +50,6 @@ if [ "$EPS_OS_NAME" != "Linux" ]; then
   log_error "OS not supported: ${CLR_CYB}$EPS_OS_NAME${CLR}"
 fi
 
-if [ "$EPS_OS_DISTRO" = "alpine" ]; then
-  [ "$(command -v bash)" ] || apk add bash >/dev/null
-fi
-
 _utilDistro=$EPS_OS_DISTRO
 
 export EPS_UTILS_COMMON=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)

@@ -15,7 +15,7 @@ A clear and concise description of what the bug is.
 
 **System info:**
  - Proxmox Version: [e.g. 6.3-6]
- - Alpine Version: [e.g. 3.12]
+ - Debian Version: [e.g. 11]
 
 **Screenshots**
 If applicable, add screenshots to help explain your problem.

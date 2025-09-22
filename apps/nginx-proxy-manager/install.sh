@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Nginx Proxy Manager Installation Script
-# Supports Alpine Linux and Debian distributions
+# Supports Debian distribution
 # This script installs NPM with all required dependencies including Node.js, Yarn, Python, and OpenResty
 #
 
@@ -63,10 +63,6 @@ step_start "Dependencies" "Installing" "Installed"
 step_start "Rust" "Installing" "Installed"
   _rustArch=""
   _rustClibtype="gnu"
-  
-  if [ "$EPS_OS_DISTRO" = "alpine" ]; then
-    _rustClibtype="musl"
-  fi
 
   case "${EPS_OS_ARCH##*-}" in
     amd64 | x86_64) _rustArch="x86_64-unknown-linux-${_rustClibtype}";;
@@ -75,12 +71,6 @@ step_start "Rust" "Installing" "Installed"
     i386 | x86) _rustArch="i686-unknown-linux-${_rustClibtype}";;
     *) step_end "Architecture not supported: ${CLR_CYB}$EPS_OS_ARCH${CLR}" 1;;
   esac
-
-  if [ "$EPS_OS_DISTRO" = "alpine" ]; then
-    if [ "$EPS_OS_ARCH" != "x86_64" -a "$EPS_OS_ARCH" != "aarch64" ]; then
-      step_end "Architecture not supported: ${CLR_CYB}$EPS_OS_ARCH${CLR}" 1
-    fi
-  fi
   
   os_fetch -O ./rustup-init https://static.rust-lang.org/rustup/archive/1.26.0/$_rustArch/rustup-init
   chmod +x ./rustup-init
@@ -105,10 +95,7 @@ step_start "Python"
   pkg_del *3-pip *3-cffi *3-cryptography *3-tldextract *3-distutils *3-venv
 
   # Install python dependencies
-  pkg_add python3
-  if [ "$EPS_OS_DISTRO" != "alpine" ]; then
-    pkg_add python3-venv
-  fi
+  pkg_add python3 python3-venv
 
   PYTHON_VERSION=$(python3 -V | sed 's/.* \([0-9]\).\([0-9]*\).*/\1.\2/')
   if printf "$PYTHON_VERSION\n3.2" | sort -cV &>/dev/null; then
@@ -135,26 +122,15 @@ step_start "Python"
   step_end "Python ${CLR_CYB}v$PYTHON_VERSION${CLR} ${CLR_GN}and Pip${CLR} ${CLR_CYB}v$PIP_VERSION${CLR} ${CLR_GN}Installed"
 
 step_start "Openresty"
-  if [ "$EPS_OS_DISTRO" = "alpine" ]; then
-    os_fetch -O /etc/apk/keys/admin@openresty.com-5ea678a6.rsa.pub 'http://openresty.org/package/admin@openresty.com-5ea678a6.rsa.pub'
-    sed -i '/openresty.org/d' /etc/apk/repositories >$__OUTPUT
-    printf "http://openresty.org/package/alpine/v3.18/main"| tee -a /etc/apk/repositories >$__OUTPUT
-  else
-    os_fetch -O- https://openresty.org/package/pubkey.gpg | gpg --yes --dearmor -o /usr/share/keyrings/openresty.gpg &>$__OUTPUT
+  os_fetch -O- https://openresty.org/package/pubkey.gpg | gpg --yes --dearmor -o /usr/share/keyrings/openresty.gpg &>$__OUTPUT
 
-    repository=http://openresty.org/package/$EPS_OS_DISTRO
-    if [ "$EPS_OS_ARCH" != "amd64" ]; then
-      repository=http://openresty.org/package/$EPS_OS_ARCH/$EPS_OS_DISTRO
-    fi
-
-    source="deb [arch=$EPS_OS_ARCH signed-by=/usr/share/keyrings/openresty.gpg] $repository $EPS_OS_CODENAME "
-    if [ "$EPS_OS_DISTRO" = "debian" ]; then
-      source+="openresty"
-    else
-      source+="main"
-    fi
-    printf "$source" | tee /etc/apt/sources.list.d/openresty.list >$__OUTPUT
+  repository=http://openresty.org/package/$EPS_OS_DISTRO
+  if [ "$EPS_OS_ARCH" != "amd64" ]; then
+    repository=http://openresty.org/package/$EPS_OS_ARCH/$EPS_OS_DISTRO
   fi
+
+  source="deb [arch=$EPS_OS_ARCH signed-by=/usr/share/keyrings/openresty.gpg] $repository $EPS_OS_CODENAME openresty"
+  printf "$source" | tee /etc/apt/sources.list.d/openresty.list >$__OUTPUT
 
   pkg_update
   pkg_add openresty
@@ -178,19 +154,9 @@ step_start "Node.js"
     *) step_end "Architecture not supported: ${CLR_CYB}$EPS_OS_ARCH${CLR}" 1;;
   esac
 
-  if [ "$EPS_OS_DISTRO" = "alpine" ]; then
-    if [ "$_nodeArch" != "x64" ]; then
-      step_end "Architecture not supported: ${CLR_CYB}$EPS_OS_ARCH${CLR}" 1
-    fi
-
-    _nodePackage="node-$NODE_VERSION-linux-$_nodeArch-musl.tar.xz"
-    os_fetch -O $_nodePackage https://unofficial-builds.nodejs.org/download/release/$NODE_VERSION/$_nodePackage
-    os_fetch -O SHASUMS256.txt https://unofficial-builds.nodejs.org/download/release/$NODE_VERSION/SHASUMS256.txt
-  else
-    _nodePackage="node-$NODE_VERSION-linux-$_nodeArch.tar.xz"
-    os_fetch -O $_nodePackage https://nodejs.org/dist/$NODE_VERSION/$_nodePackage
-    os_fetch -O SHASUMS256.txt https://nodejs.org/dist/$NODE_VERSION/SHASUMS256.txt
-  fi
+  _nodePackage="node-$NODE_VERSION-linux-$_nodeArch.tar.xz"
+  os_fetch -O $_nodePackage https://nodejs.org/dist/$NODE_VERSION/$_nodePackage
+  os_fetch -O SHASUMS256.txt https://nodejs.org/dist/$NODE_VERSION/SHASUMS256.txt
 
   grep " $_nodePackage\$" SHASUMS256.txt | sha256sum -c >$__OUTPUT
   tar -xJf "$_nodePackage" -C /usr/local --strip-components=1 --no-same-owner >$__OUTPUT
@@ -216,7 +182,7 @@ step_start "Yarn"
   step_end "Yarn ${CLR_CYB}v$YARN_VERSION${CLR} ${CLR_GN}Installed"
 
 step_start "Nginx Proxy Manager" "Downloading" "Downloaded"
-  NPM_VERSION=2.10.4
+  NPM_VERSION=2.12.6
   os_fetch -O- https://codeload.github.com/NginxProxyManager/nginx-proxy-manager/tar.gz/v$NPM_VERSION | tar -xz
   cd ./nginx-proxy-manager-$NPM_VERSION
   step_end "Nginx Proxy Manager ${CLR_CYB}v$NPM_VERSION${CLR} ${CLR_GN}Downloaded"

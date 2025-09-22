@@ -73,7 +73,7 @@ EPS_CT_HOSTNAME=${EPS_CT_HOSTNAME:-${EPS_APP_NAME}}
 EPS_CT_NETWORK_BRIDGE=${EPS_CT_NETWORK_BRIDGE:-vmbr0}
 EPS_CT_STORAGE_CONTAINER=${EPS_CT_STORAGE_CONTAINER:-local-lvm}
 EPS_CT_STORAGE_TEMPLATES=${EPS_CT_STORAGE_TEMPLATES:-local}
-export EPS_OS_DISTRO=${EPS_OS_DISTRO:-alpine}
+export EPS_OS_DISTRO=${EPS_OS_DISTRO:-debian}
 EPS_OS_VERSION=${EPS_OS_VERSION:-}
 export EPS_CLEANUP=${EPS_CLEANUP:-false}
 EPS_CT_CPU_CORES=${EPS_CT_CPU_CORES:-1}
@@ -183,9 +183,6 @@ step_start "LXC container" "Creating" "Created"
   pct create $EPS_CT_ID "$EPS_CT_STORAGE_TEMPLATES:vztmpl/$_template" "${_pct_options[@]}" >$__OUTPUT
   pct start $EPS_CT_ID
   sleep 2
-  if [ "$EPS_OS_DISTRO" = "alpine" ]; then
-    pct exec "$EPS_CT_ID" -- ash -c "apk add bash >/dev/null"
-  fi
 
   step_end "LXC container ${CLR_CYB}$EPS_CT_ID${CLR_GN} created successfully"
 

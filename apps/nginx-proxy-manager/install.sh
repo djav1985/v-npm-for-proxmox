@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+#
+# Nginx Proxy Manager Installation Script
+# Supports Alpine Linux and Debian distributions
+# This script installs NPM with all required dependencies including Node.js, Yarn, Python, and OpenResty
+#
+
 EPS_BASE_URL=${EPS_BASE_URL:-}
 EPS_OS_DISTRO=${EPS_OS_DISTRO:-}
 EPS_UTILS_COMMON=${EPS_UTILS_COMMON:-}
@@ -264,7 +270,6 @@ step_start "Environment" "Setting up" "Setup"
   chmod -R 777 /var/cache/nginx
   chmod 644 /etc/logrotate.d/nginx-proxy-manager
   chown root /tmp/nginx
-  chmod -R 777 /var/cache/nginx
 
   # Dynamically generate resolvers file, if resolver is IPv6, enclose in `[]`
   echo resolver "$(awk 'BEGIN{ORS=" "} $1=="nameserver" { sub(/%.*$/,"",$2); print ($2 ~ ":")? "["$2"]": $2}' /etc/resolv.conf) valid=10s;" > /etc/nginx/conf.d/include/resolvers.conf

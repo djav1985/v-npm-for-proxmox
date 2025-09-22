@@ -55,9 +55,6 @@ if [ "$EPS_OS_DISTRO" = "alpine" ]; then
 fi
 
 _utilDistro=$EPS_OS_DISTRO
-if [ "$EPS_OS_DISTRO" = "ubuntu" ]; then
-  _utilDistro="debian"
-fi
 
 export EPS_UTILS_COMMON=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)
 export EPS_UTILS_DISTRO=$(wget --no-cache -qO- $EPS_BASE_URL/utils/${_utilDistro}.sh)

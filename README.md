@@ -6,7 +6,7 @@ Some useful proxmox scripts...
 
 To create a new LXC container on Proxmox and setup a app to run inside of it, run the following in a SSH connection or the Proxmox web shell.
 
-**_Tested with:_** _proxmox 7.1+, alpine 3.12+, debian 11+, Ubuntu 18+_
+**_Tested with:_** _proxmox 7.1+, alpine 3.12+, debian 11+_
 
 ```bash
 bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/create.sh)"
@@ -44,7 +44,7 @@ There is no login required to access the console from the Proxmox web UI. If you
 
 If you are not using proxmox or want to install a app on a existing install, you can run the setup script itself.
 
-**_Note:_** _Only Alpine, Debian and Ubuntu are currently supported_
+**_Note:_** _Only Alpine and Debian are currently supported_
 
 ```sh
 sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --app nginx-proxy-manager

@@ -50,8 +50,10 @@ if [ "$EPS_OS_NAME" != "Linux" ]; then
   log_error "OS not supported: ${CLR_CYB}$EPS_OS_NAME${CLR}"
 fi
 
-_utilDistro=$EPS_OS_DISTRO
+if [ "$EPS_OS_DISTRO" != "debian" ]; then
+  log_error "Only Debian is supported: ${CLR_CYB}$EPS_OS_DISTRO${CLR}"
+fi
 
-export EPS_UTILS_COMMON=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)
-export EPS_UTILS_DISTRO=$(wget --no-cache -qO- $EPS_BASE_URL/utils/${_utilDistro}.sh)
+export EPS_UTILS_COMMON=$(wget --no-cache -qO- "$EPS_BASE_URL"/utils/common.sh)
+export EPS_UTILS_DISTRO=$(wget --no-cache -qO- "$EPS_BASE_URL"/utils/debian.sh)
 bash -c "$EPS_APP_INSTALL"

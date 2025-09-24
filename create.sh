@@ -15,9 +15,6 @@ while [ "$#" -gt 0 ]; do
     --id)
       EPS_CT_ID=$2
       shift;;
-    --os)
-      EPS_OS_DISTRO=$2;
-      shift;;
     --os-version)
       EPS_OS_VERSION=$2;
       shift;;
@@ -73,7 +70,7 @@ EPS_CT_HOSTNAME=${EPS_CT_HOSTNAME:-${EPS_APP_NAME}}
 EPS_CT_NETWORK_BRIDGE=${EPS_CT_NETWORK_BRIDGE:-vmbr0}
 EPS_CT_STORAGE_CONTAINER=${EPS_CT_STORAGE_CONTAINER:-local-lvm}
 EPS_CT_STORAGE_TEMPLATES=${EPS_CT_STORAGE_TEMPLATES:-local}
-export EPS_OS_DISTRO=${EPS_OS_DISTRO:-debian}
+export EPS_OS_DISTRO=debian
 EPS_OS_VERSION=${EPS_OS_VERSION:-}
 export EPS_CLEANUP=${EPS_CLEANUP:-false}
 EPS_CT_CPU_CORES=${EPS_CT_CPU_CORES:-1}
@@ -98,8 +95,7 @@ lxc_checks
 log "info" "Container will be created using the following settings.
 
   Application:          ${CLR_CYB}$EPS_APP_NAME${CLR_CY}
-  OS Distribution:      ${CLR_CYB}$EPS_OS_DISTRO${CLR_CY}
-  OS Version:           ${CLR_CYB}${EPS_OS_VERSION:-latest}${CLR_CY}
+  Debian Version:       ${CLR_CYB}${EPS_OS_VERSION:-latest}${CLR_CY}
   Container ID:         ${CLR_CYB}$EPS_CT_ID${CLR_CY}
   Container Hostname:   ${CLR_CYB}$EPS_CT_HOSTNAME${CLR_CY}
   Allocated Cores:      ${CLR_CYB}$EPS_CT_CPU_CORES${CLR_CY}
@@ -188,7 +184,5 @@ step_start "LXC container" "Creating" "Created"
 
 trap - ERR
 
-_utilDistro=$EPS_OS_DISTRO
-
-export EPS_UTILS_DISTRO=$(wget --no-cache -qO- $EPS_BASE_URL/utils/${_utilDistro}.sh)
-lxc-attach -n $EPS_CT_ID -- bash -c "$EPS_APP_INSTALL"
+export EPS_UTILS_DISTRO=$(wget --no-cache -qO- "$EPS_BASE_URL"/utils/debian.sh)
+lxc-attach -n "$EPS_CT_ID" -- bash -c "$EPS_APP_INSTALL"

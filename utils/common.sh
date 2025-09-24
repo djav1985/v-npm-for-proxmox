@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # Color variables
 CLR_RD="\033[0;31m"
 CLR_RDB="\033[1;31m"

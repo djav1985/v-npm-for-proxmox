@@ -26,21 +26,23 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-EPS_APP_NAME=${EPS_APP_NAME:-}
+SUPPORTED_APP="nginx-proxy-manager"
+EPS_APP_NAME=${EPS_APP_NAME:-$SUPPORTED_APP}
 export EPS_CLEANUP=${EPS_CLEANUP:-false}
 
-if [ -z "$EPS_APP_NAME" ]; then
-  log_error "No application provided"
+if [ "$EPS_APP_NAME" != "$SUPPORTED_APP" ]; then
+  log_error "Unsupported application: ${CLR_CYB}$EPS_APP_NAME${CLR}"
 fi
 
-export EPS_APP_CONFIG=$(wget --no-cache -qO- $EPS_BASE_URL/apps/$EPS_APP_NAME/config.sh)
+EPS_APP_REMOTE_PATH="$EPS_BASE_URL/app"
+export EPS_APP_CONFIG=$(wget --no-cache -qO- "$EPS_APP_REMOTE_PATH"/config.sh)
 if [ $? -gt 0 ]; then
-  log_error "No config found for ${CLR_CYB}$EPS_APP_NAME${CLR}"
+  log_error "No config found at ${CLR_CYB}$EPS_APP_REMOTE_PATH${CLR}"
 fi
 
-EPS_APP_INSTALL=$(wget --no-cache -qO- $EPS_BASE_URL/apps/$EPS_APP_NAME/install.sh)
+EPS_APP_INSTALL=$(wget --no-cache -qO- "$EPS_APP_REMOTE_PATH"/install.sh)
 if [ $? -gt 0 ]; then
-  log_error "No install script found for ${CLR_CYB}$EPS_APP_NAME${CLR}"
+  log_error "No install script found at ${CLR_CYB}$EPS_APP_REMOTE_PATH${CLR}"
 fi
 
 export EPS_OS_NAME=$(uname)
@@ -54,6 +56,6 @@ if [ "$EPS_OS_DISTRO" != "debian" ]; then
   log_error "Only Debian is supported: ${CLR_CYB}$EPS_OS_DISTRO${CLR}"
 fi
 
-export EPS_UTILS_COMMON=$(wget --no-cache -qO- "$EPS_BASE_URL"/utils/common.sh)
-export EPS_UTILS_DISTRO=$(wget --no-cache -qO- "$EPS_BASE_URL"/utils/debian.sh)
+export EPS_UTILS_COMMON=$(wget --no-cache -qO- "$EPS_BASE_URL"/app/common.sh)
+export EPS_UTILS_DISTRO=$(wget --no-cache -qO- "$EPS_BASE_URL"/app/debian.sh)
 bash -c "$EPS_APP_INSTALL"

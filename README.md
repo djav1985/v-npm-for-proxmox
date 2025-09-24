@@ -1,10 +1,10 @@
-# Proxmox scripts
+# Proxmox LXC Container Scripts
 
-Some useful proxmox scripts...
+Scripts to automate creation and management of LXC containers on Proxmox VE with pre-configured applications.
 
-## Usage
+## Create Proxmox LXC Container
 
-To create a new LXC container on Proxmox and setup a app to run inside of it, run the following in a SSH connection or the Proxmox web shell.
+To create a new LXC container on Proxmox and setup an app to run inside of it, run the following in a SSH connection or the Proxmox web shell:
 
 **_Tested with:_** _proxmox 7.1+, debian 11+_
 
@@ -44,7 +44,7 @@ There is no login required to access the console from the Proxmox web UI. If you
 
 If you are not using proxmox or want to install a app on a existing install, you can run the setup script itself.
 
-**_Note:_** _Only Debian is currently supported_
+**_Note:_** _Only Debian (11+) is currently supported_
 
 ```sh
 sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --app nginx-proxy-manager
@@ -59,7 +59,15 @@ sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-f
 
 ## Applications
 
-[Nginx Proxy Manager](https://github.com/djav1985/v-npm-for-proxmox/tree/main/apps/nginx-proxy-manager)
+### Nginx Proxy Manager
+
+**_Note:_** _As [Nginx Proxy Manager](https://nginxproxymanager.com/) uses openresty, nginx will be removed from the OS as it will conflict with openresty_
+
+To install Nginx Proxy Manager on an existing system:
+
+```sh
+sh -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --app nginx-proxy-manager --cleanup
+```
 
 ## Thanks
 

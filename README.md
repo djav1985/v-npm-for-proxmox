@@ -19,7 +19,7 @@ bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm
 
 | argument     | default        | description                           |
 | ------------ | -------------- | ------------------------------------- |
-| --app        | none           | application to install                |
+| --app        | nginx-proxy-manager | application to install (currently limited to `nginx-proxy-manager`) |
 | --id         | $nextid        | container id                          |
 | --os-version | latest         | OS version to install                 |
 | --bridge     | vmbr0          | bridge used for eth0                  |
@@ -32,10 +32,12 @@ bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm
 | --swap       | 0              | amount of SWAP                        |
 | --cleanup    | false          | Remove dev dependencies after install |
 
+> **Note:** The `--app` flag defaults to `nginx-proxy-manager`, which is the only supported application at this time.
+
 Example with custom parameters:
 
 ```bash
-bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/create.sh)" -s --app nginx-proxy-manager --cleanup
+bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/create.sh)" -s --cleanup
 ```
 
 ### Console Access
@@ -47,15 +49,17 @@ There is no login required to access the console from the Proxmox web UI. If you
 Install an application on an existing Debian system without using Proxmox.
 
 ```bash
-bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --app nginx-proxy-manager
+bash -c "$(wget --no-cache -qO- https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main/install.sh)" -s --cleanup
 ```
 
 ### Command Line Arguments
 
 | argument  | default | description                           |
 | --------- | ------- | ------------------------------------- |
-| --app     | none    | application to install                |
+| --app     | nginx-proxy-manager | application to install (currently limited to `nginx-proxy-manager`) |
 | --cleanup | false   | Remove dev dependencies after install |
+
+> The same `--app` default applies when running the Debian installer directly.
 
 ## Applications
 

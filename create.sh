@@ -2,7 +2,7 @@
 export EPS_BASE_URL=${EPS_BASE_URL:-https://raw.githubusercontent.com/djav1985/v-npm-for-proxmox/main}
 export EPS_CT_INSTALL=true
 
-export EPS_UTILS_COMMON=$(wget --no-cache -qO- $EPS_BASE_URL/utils/common.sh)
+export EPS_UTILS_COMMON=$(wget --no-cache -qO- "$EPS_BASE_URL"/app/common.sh)
 source <(echo -n "$EPS_UTILS_COMMON")
 pms_bootstrap
 pms_settraps
@@ -50,19 +50,22 @@ while [ "$#" -gt 0 ]; do
   shift
 done
 
-EPS_APP_NAME=${EPS_APP_NAME:-}
-if [ -z "$EPS_APP_NAME" ]; then
-  log "error" "No application provided" "" 1
+SUPPORTED_APP="nginx-proxy-manager"
+EPS_APP_NAME=${EPS_APP_NAME:-$SUPPORTED_APP}
+
+if [ "$EPS_APP_NAME" != "$SUPPORTED_APP" ]; then
+  log "error" "Unsupported application: ${CLR_CYB}$EPS_APP_NAME${CLR}" "" 1
 fi
 
-export EPS_APP_CONFIG=$(wget --no-cache -qO- $EPS_BASE_URL/apps/$EPS_APP_NAME/config.sh)
+EPS_APP_REMOTE_PATH="$EPS_BASE_URL/app"
+export EPS_APP_CONFIG=$(wget --no-cache -qO- "$EPS_APP_REMOTE_PATH"/config.sh)
 if [ $? -gt 0 ]; then
-  log "error" "Application config not found for ${CLR_CYB}$EPS_APP_NAME${CLR}" "" 1
+  log "error" "Application config not found at ${CLR_CYB}$EPS_APP_REMOTE_PATH${CLR}" "" 1
 fi
 
-EPS_APP_INSTALL=$(wget --no-cache -qO- $EPS_BASE_URL/apps/$EPS_APP_NAME/install.sh)
+EPS_APP_INSTALL=$(wget --no-cache -qO- "$EPS_APP_REMOTE_PATH"/install.sh)
 if [ $? -gt 0 ]; then
-  log "error" "No install script found for ${CLR_CYB}$EPS_APP_NAME${CLR}" "" 1
+  log "error" "No install script found at ${CLR_CYB}$EPS_APP_REMOTE_PATH${CLR}" "" 1
 fi
 
 EPS_CT_ID=${EPS_CT_ID:-$(pvesh get /cluster/nextid)}
@@ -184,5 +187,5 @@ step_start "LXC container" "Creating" "Created"
 
 trap - ERR
 
-export EPS_UTILS_DISTRO=$(wget --no-cache -qO- "$EPS_BASE_URL"/utils/debian.sh)
+export EPS_UTILS_DISTRO=$(wget --no-cache -qO- "$EPS_BASE_URL"/app/debian.sh)
 lxc-attach -n "$EPS_CT_ID" -- bash -c "$EPS_APP_INSTALL"
